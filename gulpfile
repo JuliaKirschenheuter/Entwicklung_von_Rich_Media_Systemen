@@ -1,0 +1,77 @@
+# Implementierung in Gulp
+var gulp = require('gulp'),
+
+    imageminJpegtran = require('imagemin-jpegtran'),
+    imageminSvgo = require('imagemin-svgo'),
+    imageminOptipng = require('imagemin-optipng'),
+    imageminGifsicle = require('imagemin-gifsicle'),
+
+    imageminWebp = require('imagemin-webp'),
+
+    minify = true;
+
+
+//Imagemin allgemein
+
+//gifsicle — Compress GIF images
+//jpegtran — Compress JPEG images
+//optipng — Compress PNG images
+//svgo — Compress SVG images
+
+
+//jpegtran
+gulp.task('jpegtran', function () {
+    gulp.src('./src/images/jpg/*.jpg')
+        .pipe(imageminJpegtran({progressive: true}, {arithmetic: true})())
+        .pipe(gulp.dest('./build/images/jpg'));
+});
+
+//svgo
+gulp.task('imageminSVGO', function () {
+    gulp.src('./src/images/svg/*.svg')
+        .pipe(imageminSvgo({plugins: [
+            {cleanupAttrs: true},{removeDoctype: true},{removeXMLProcInst: true},
+            {removeComments: true},{removeMetaData: true},{removeTitle: true},{removeDesc:true},
+            {removeUselessDefs: true},{removeEditorsNSData: true},{removeEmptyAttrs: true},
+            {removeHiddenElems: true},{removeEmptyText: true},{removeEmptyContainers: true},
+            {removeViewBox:true},{cleanUpEnableBackground:true},{convertTyleToAttrs:true},
+            {convertColors: true},{convertPathDataers:true},{convertTransform:true},
+            {removeUnknownsAndDefaults: true},{removeNonInheritableGroupAttrs:true},
+            {removeUselessStrokeAndFill: true},{removeUnusedNS: true},{cleanupIDs: true},
+            {cleanupNumericValues: true},{moveElemsAttrsToGroup: true},{moveGroupAttrsToElems: true},
+            {collapseGroups: true},{mergePaths: true},{convertShapeToPath: true},
+            {sortAttrs:true},{ transformsWithOnePath: true}
+            ]
+        })())
+        .pipe(gulp.dest('./build/images/svg'));
+});
+
+//optipng
+gulp.task('optipng', function () {
+    gulp.src('./src/images/png/*.png')
+        .pipe(imageminOptipng({optimizationLevel: 7})())
+        .pipe(gulp.dest('./build/images/png'));
+});
+
+//gifsicle
+gulp.task('gifsicle', function () {
+    gulp.src('./src/images/gif/*.gif')
+        .pipe(imageminGifsicle({interlaced: true})())
+        .pipe(gulp.dest('./build/images/gif'));
+});
+
+
+//webp
+gulp.task('webp', function () {
+    gulp.src('./src/images/*.{jpg,png}')
+        .pipe(imageminWebp({quality: 70},{alphaQuality: 70},{filter: 90},
+            {method:6},{sns: 90},{autoFilter: true})())
+        .pipe(gulp.dest('./build/images/webp/verlustbehaftet'));
+});
+
+
+gulp.task('default', function () {
+    minify = true;
+    gulp.start('webp');
+
+});
